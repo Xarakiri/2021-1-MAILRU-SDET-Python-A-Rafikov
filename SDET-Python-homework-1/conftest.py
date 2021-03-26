@@ -17,6 +17,7 @@ def driver(config):
     url = config['url']
 
     browser = webdriver.Chrome()
+    browser.maximize_window()
     browser.get(url)
 
     yield browser
