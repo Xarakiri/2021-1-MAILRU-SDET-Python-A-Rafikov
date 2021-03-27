@@ -1,4 +1,6 @@
+import string
 import time
+from random import choices
 
 import pytest
 from selenium.webdriver.common.keys import Keys
@@ -39,3 +41,39 @@ class Test(BaseCase):
         exit_btn.click()
 
         assert self.driver.current_url == 'https://target.my.com/'
+
+    def test_edit_contact_information(self, login):
+        time.sleep(3)
+        profile_btn = self.find(basic_locators.PROFILE_LOCATOR)
+        profile_btn.click()
+        time.sleep(3.5)
+
+        fio_input = self.find(basic_locators.FIO_LOCATOR)
+        fio_input.clear()
+        new_fio = ''.join(choices(string.ascii_letters, k=6))
+        fio_input.send_keys(new_fio)
+
+        phone_input = self.find(basic_locators.PHONE_LOCATOR)
+        phone_input.clear()
+        new_phone = ''.join(choices(string.digits, k=11))
+        phone_input.send_keys(new_phone)
+
+        email_input = self.find(basic_locators.EMAIL_LOCATOR)
+        email_input.clear()
+        new_email = ''.join(choices(string.ascii_letters, k=5)) + '@' + \
+                    ''.join(choices(string.ascii_letters, k=4)) + '.ru'
+        email_input.send_keys(new_email)
+
+        save_btn = self.find(basic_locators.SAVE_BUTTON_LOCATOR)
+        save_btn.click()
+
+        self.driver.refresh()
+        time.sleep(3)
+
+        fio_input = self.find(basic_locators.FIO_LOCATOR)
+        phone_input = self.find(basic_locators.PHONE_LOCATOR)
+        email_input = self.find(basic_locators.EMAIL_LOCATOR)
+
+        assert fio_input.get_attribute('value') == new_fio
+        assert phone_input.get_attribute('value') == new_phone
+        assert email_input.get_attribute('value') == new_email
