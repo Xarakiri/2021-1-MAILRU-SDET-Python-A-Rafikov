@@ -77,3 +77,22 @@ class Test(BaseCase):
         assert fio_input.get_attribute('value') == new_fio
         assert phone_input.get_attribute('value') == new_phone
         assert email_input.get_attribute('value') == new_email
+
+    @pytest.mark.parametrize(
+        'locator, url',
+        [
+            (
+                basic_locators.STATISTIC_PAGE_LOCATOR,
+                'https://target.my.com/statistics/summary'),
+            (
+                basic_locators.BILLING_PAGE_LOCATOR,
+                'https://target.my.com/billing#deposit',
+            ),
+        ]
+    )
+    def test_go_page(self, login, locator, url):
+        time.sleep(3)
+        to_go = self.find(locator)
+        to_go.click()
+        time.sleep(3)
+        assert self.driver.current_url == url
