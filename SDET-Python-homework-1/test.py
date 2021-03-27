@@ -29,3 +29,13 @@ class Test(BaseCase):
 
     def test_login(self, login):
         assert self.driver.current_url == 'https://target.my.com/dashboard'
+
+    def test_logout(self, login):
+        time.sleep(3)
+        account_btn = self.find(basic_locators.ACCOUNT_BUTTON_LOCATOR)
+        account_btn.click()
+
+        exit_btn = self.find(basic_locators.EXIT_BUTTON_LOCATOR)
+        exit_btn.click()
+
+        assert self.driver.current_url == 'https://target.my.com/'
