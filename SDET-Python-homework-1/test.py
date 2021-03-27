@@ -1,5 +1,4 @@
 import string
-import time
 from random import choices
 
 import pytest
@@ -14,9 +13,7 @@ class Test(BaseCase):
     def login(self,
               username='rafikov.ds7777@mail.ru',
               password='RYnT84r-nVpwCx7'):
-        time.sleep(3)
-        enter_btn = self.find(basic_locators.LOGIN_LOCATOR)
-        enter_btn.click()
+        self.click(basic_locators.LOGIN_LOCATOR)
 
         login_input = self.find(basic_locators.LOGIN_INPUT_LOCATOR)
         login_input.clear()
@@ -35,21 +32,14 @@ class Test(BaseCase):
 
     @pytest.mark.UI
     def test_logout(self, login):
-        time.sleep(3)
-        account_btn = self.find(basic_locators.ACCOUNT_BUTTON_LOCATOR)
-        account_btn.click()
-
-        exit_btn = self.find(basic_locators.EXIT_BUTTON_LOCATOR)
-        exit_btn.click()
+        self.click(basic_locators.ACCOUNT_BUTTON_LOCATOR)
+        self.click(basic_locators.EXIT_BUTTON_LOCATOR)
 
         assert self.driver.current_url == 'https://target.my.com/'
 
     @pytest.mark.UI
     def test_edit_contact_information(self, login):
-        time.sleep(3)
-        profile_btn = self.find(basic_locators.PROFILE_LOCATOR)
-        profile_btn.click()
-        time.sleep(3.5)
+        self.click(basic_locators.PROFILE_LOCATOR)
 
         fio_input = self.find(basic_locators.FIO_LOCATOR)
         fio_input.clear()
@@ -67,11 +57,9 @@ class Test(BaseCase):
                     ''.join(choices(string.ascii_letters, k=4)) + '.ru'
         email_input.send_keys(new_email)
 
-        save_btn = self.find(basic_locators.SAVE_BUTTON_LOCATOR)
-        save_btn.click()
+        self.click(basic_locators.SAVE_BUTTON_LOCATOR)
 
         self.driver.refresh()
-        time.sleep(3)
 
         fio_input = self.find(basic_locators.FIO_LOCATOR)
         phone_input = self.find(basic_locators.PHONE_LOCATOR)
@@ -87,16 +75,13 @@ class Test(BaseCase):
         [
             (
                 basic_locators.STATISTIC_PAGE_LOCATOR,
-                'https://target.my.com/statistics/summary'),
+                'https://target.my.com/statistics'),
             (
                 basic_locators.BILLING_PAGE_LOCATOR,
-                'https://target.my.com/billing#deposit',
+                'https://target.my.com/billing',
             ),
         ]
     )
     def test_go_page(self, login, locator, url):
-        time.sleep(3)
-        to_go = self.find(locator)
-        to_go.click()
-        time.sleep(3)
+        self.click(locator, 10)
         assert self.driver.current_url == url
