@@ -29,9 +29,11 @@ class Test(BaseCase):
 
         password_input.send_keys(Keys.ENTER)
 
+    @pytest.mark.UI
     def test_login(self, login):
         assert self.driver.current_url == 'https://target.my.com/dashboard'
 
+    @pytest.mark.UI
     def test_logout(self, login):
         time.sleep(3)
         account_btn = self.find(basic_locators.ACCOUNT_BUTTON_LOCATOR)
@@ -42,6 +44,7 @@ class Test(BaseCase):
 
         assert self.driver.current_url == 'https://target.my.com/'
 
+    @pytest.mark.UI
     def test_edit_contact_information(self, login):
         time.sleep(3)
         profile_btn = self.find(basic_locators.PROFILE_LOCATOR)
@@ -78,6 +81,7 @@ class Test(BaseCase):
         assert phone_input.get_attribute('value') == new_phone
         assert email_input.get_attribute('value') == new_email
 
+    @pytest.mark.UI
     @pytest.mark.parametrize(
         'locator, url',
         [
