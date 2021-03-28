@@ -20,6 +20,12 @@ class BaseCase:
             timeout = 5
         return WebDriverWait(self.driver, timeout=timeout)
 
+    def send_keys(self, locator, *query):
+        search = self.find(locator)
+        search.clear()
+        for q in query:
+            search.send_keys(q)
+
     def find(self, locator, timeout=None):
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
