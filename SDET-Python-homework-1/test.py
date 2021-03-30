@@ -58,17 +58,21 @@ class Test(BaseCase):
 
     @pytest.mark.UI
     @pytest.mark.parametrize(
-        'locator, url',
+        'button_locator, item_locator, url',
         [
             (
                 basic_locators.STATISTIC_PAGE_LOCATOR,
-                'https://target.my.com/statistics'),
+                basic_locators.STATISTIC_CONSTRUCTOR_LOCATOR,
+                'https://target.my.com/statistics/summary'),
             (
                 basic_locators.BILLING_PAGE_LOCATOR,
-                'https://target.my.com/billing',
+                basic_locators.BILLING_DEPOSIT_PAYMENT_LOCATOR,
+                'https://target.my.com/billing#deposit',
             ),
         ]
     )
-    def test_go_page(self, login, locator, url):
-        self.click(locator, 10)
+    def test_go_page(self, login, button_locator, item_locator, url):
+        self.click(button_locator, 10)
+        item = self.find(item_locator)
+        assert item != None
         assert self.driver.current_url == url
