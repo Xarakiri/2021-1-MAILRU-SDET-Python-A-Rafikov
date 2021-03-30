@@ -46,6 +46,7 @@ class Test(BaseCase):
         self.send_keys(basic_locators.EMAIL_LOCATOR, new_email)
 
         self.click(basic_locators.SAVE_BUTTON_LOCATOR)
+        self.click(basic_locators.DATA_SAVED_NOTIFICATION_LOCATOR)
         self.driver.refresh()
 
         fio_input = self.find(basic_locators.FIO_LOCATOR)
