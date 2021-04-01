@@ -1,0 +1,17 @@
+from selenium.webdriver.common.by import By
+
+LOGIN_LOCATOR = (By.XPATH, '//div[contains(text(), "Войти")]')
+LOGIN_INPUT_LOCATOR = (By.NAME, 'email')
+PASSWORD_INPUT_LOCATOR = (By.NAME, 'password')
+ACCOUNT_BUTTON_LOCATOR = (By.XPATH, '//div[contains(text(), "Баланс")]')
+EXIT_BUTTON_LOCATOR = (By.XPATH, '//a[contains(text(), "Выйти")]')
+PROFILE_LOCATOR = (By.XPATH, '//a[contains(@href,"profile")]')
+FIO_LOCATOR = (By.XPATH, '//div[@data-name="fio"]//input')
+PHONE_LOCATOR = (By.XPATH, '//div[@data-name="phone"]//input')
+EMAIL_LOCATOR = (By.XPATH, '//div[@class="js-additional-emails"]//input')
+SAVE_BUTTON_LOCATOR = (By.XPATH, '//button[@data-class-name="Submit"]')
+STATISTIC_PAGE_LOCATOR = (By.XPATH, '//a[contains(@href,"statistics")]')
+BILLING_PAGE_LOCATOR = (By.XPATH, '//a[contains(@href,"billing")]')
+STATISTIC_CONSTRUCTOR_LOCATOR = (By.XPATH, '//a[contains(@href, "statistics/summary")]')
+BILLING_DEPOSIT_PAYMENT_LOCATOR = (By.XPATH, '//input[contains(@value,"Пополнить счёт")]')
+DATA_SAVED_NOTIFICATION_LOCATOR = (By.XPATH, '//div[contains(text(), "Информация успешно сохранена")]')
