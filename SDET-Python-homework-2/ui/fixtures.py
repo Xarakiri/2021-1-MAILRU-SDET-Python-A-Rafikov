@@ -2,6 +2,8 @@ import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+from ui.pages.base_page import BasePage
+
 
 @pytest.fixture(scope='function')
 def driver(config):
@@ -15,3 +17,8 @@ def driver(config):
 
     yield browser
     browser.quit()
+
+
+@pytest.fixture
+def base_page(driver):
+    return BasePage(driver=driver)
