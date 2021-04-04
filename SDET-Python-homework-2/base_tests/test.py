@@ -5,6 +5,7 @@ import pytest
 from selenium.webdriver.common.keys import Keys
 
 from base_tests.base import BaseCase
+from ui.pages.main_page import MainPage
 
 
 class Test(BaseCase):
@@ -15,6 +16,11 @@ class Test(BaseCase):
         self.base_page.send_keys(self.base_page.locators.LOGIN_INPUT, username)
         self.base_page.send_keys(self.base_page.locators.PASSWORD_INPUT,
                                  password, Keys.ENTER)
+
+    @pytest.fixture
+    def login(self):
+        self._login()
+        yield MainPage(driver=self.driver)
 
     def test_negative_login1(self):
         self._login(

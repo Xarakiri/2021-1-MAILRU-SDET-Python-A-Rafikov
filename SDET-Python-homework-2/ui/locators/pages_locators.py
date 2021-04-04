@@ -6,3 +6,7 @@ class BasePageLocators:
     LOGIN_INPUT = (By.NAME, 'email')
     PASSWORD_INPUT = (By.NAME, 'password')
     ERROR_MSG = (By.XPATH, '//div[contains(text(), "Invalid login or password")]')
+
+
+class MainPageLocators:
+    CREATE_COMPANY = (By.XPATH, '//div[contains(text(), "Создать кампанию")]')
