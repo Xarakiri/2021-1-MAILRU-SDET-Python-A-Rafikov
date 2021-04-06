@@ -1,3 +1,4 @@
+import os
 import string
 from random import choices, randint
 
@@ -9,6 +10,10 @@ from ui.pages.main_page import MainPage
 
 
 class Test(BaseCase):
+    @pytest.fixture(scope='function')
+    def file_path(self, repo_root):
+        return os.path.join(repo_root, 'ui', 'test.png')
+   
     def _login(self,
                username='rafikov.ds7777@mail.ru',
                password='RYnT84r-nVpwCx7'):
