@@ -15,6 +15,30 @@ class Test(BaseCase):
     def file_path(self, repo_root):
         return os.path.join(repo_root, 'ui', 'test.png')
 
+    @pytest.fixture
+    def create_segment(self, login):
+        main_page = login
+        segment_page = main_page.go_to_segment_page()
+
+        try:
+            segment_page.click(segment_page.locators.CREATE_NEW)
+        except TimeoutException:
+            segment_page.click(segment_page.locators.ALREADY_CREATED)
+
+        segment_page.click(segment_page.locators.GAMES_SEGMENT)
+        segment_page.click(segment_page.locators.GAMES_SEGMENT_CBX)
+        segment_page.click(segment_page.locators.ADD_SEGMENT_BTN)
+
+        segment_name = ''.join(choices(string.ascii_letters, k=randint(4, 11)))
+
+        segment_page.click(segment_page.locators.SEGMENT_NAME_INPUT)
+        segment_page.send_keys(
+            segment_page.locators.SEGMENT_NAME_INPUT,
+            segment_name
+        )
+        segment_page.click(segment_page.locators.CREATE_SEGMENT_BTN)
+        return segment_page, segment_name
+
     def _login(self,
                username='rafikov.ds7777@mail.ru',
                password='RYnT84r-nVpwCx7'):
@@ -22,6 +46,14 @@ class Test(BaseCase):
         self.base_page.send_keys(self.base_page.locators.LOGIN_INPUT, username)
         self.base_page.send_keys(self.base_page.locators.PASSWORD_INPUT,
                                  password, Keys.ENTER)
+
+    def _delete_segment(self, segment_page, segment_name):
+        segment_page.click(
+            (segment_page.locators.CHECK_SEGMENT[0],
+             segment_page.locators.CHECK_SEGMENT[1].format(segment_name))
+        )
+        segment_page.click(segment_page.locators.ACTION_LIST)
+        segment_page.click(segment_page.locators.DELETE_BUTTON)
 
     @pytest.fixture
     def login(self):
@@ -70,7 +102,7 @@ class Test(BaseCase):
 
         campaign = main_page.find((main_page.locators.CHECK_CAMPAIGN[0],
                                    main_page.locators.CREATE_CAMPAIGN[1].format(campaign_name)))
-        
+
         assert campaign is not None
 
         main_page.click(
@@ -79,6 +111,21 @@ class Test(BaseCase):
             timeout=30
         )
         main_page.click(main_page.locators.ACTION_LIST)
-        main_page.click(main_page.locators.DELETE_CAMPAIGN_BUTTON)
+        main_page.click(main_page.locators.DELETE_BUTTON)
 
         assert main_page.is_company_deleted(campaign_name)
+
+    def test_create_new_segment(self, create_segment):
+        segment_page, segment_name = create_segment
+
+        segment_in_list = segment_page.find(
+            (segment_page.locators.SEGMENT_IN_LIST[0],
+             segment_page.locators.SEGMENT_IN_LIST[1].format(segment_name))
+        )
+        assert segment_in_list is not None
+
+        self._delete_segment(segment_page, segment_name)
+
+        segment_deleted_notification = segment_page.find(segment_page.locators.SEGMENT_DELETED_NOTIFICATION)
+
+        assert segment_deleted_notification is not None

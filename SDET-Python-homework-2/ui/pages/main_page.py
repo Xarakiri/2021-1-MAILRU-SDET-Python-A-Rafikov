@@ -1,5 +1,6 @@
 from ui.locators.pages_locators import MainPageLocators
 from ui.pages.base_page import BasePage
+from ui.pages.segments_page import SegmentPage
 
 
 class MainPage(BasePage):
@@ -16,3 +17,7 @@ class MainPage(BasePage):
              self.locators.TRANSLATION[1].format(row_id))
         )
         return deleted is not None
+
+    def go_to_segment_page(self):
+        self.click(self.locators.SEGMENTS_BUTTON)
+        return SegmentPage(driver=self.driver)
