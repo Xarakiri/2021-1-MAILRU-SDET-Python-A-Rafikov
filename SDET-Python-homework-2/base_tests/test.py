@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 
 from base_tests.base import BaseCase
 from ui.pages.main_page import MainPage
+import allure
 
 
 class Test(BaseCase):
@@ -60,6 +61,7 @@ class Test(BaseCase):
         self._login()
         yield MainPage(driver=self.driver)
 
+    @pytest.mark.UI
     def test_negative_login1(self):
         self._login(
             username=''.join(choices(string.ascii_letters, k=randint(2, 10))) + '@' +
@@ -68,6 +70,7 @@ class Test(BaseCase):
         error_msg = self.base_page.find(self.base_page.locators.ERROR_MSG)
         assert error_msg != None
 
+    @pytest.mark.UI
     def test_negative_login2(self):
         self._login(
             password=''.join(choices(string.ascii_letters, k=randint(2, 10)))
@@ -75,6 +78,7 @@ class Test(BaseCase):
         error_msg = self.base_page.find(self.base_page.locators.ERROR_MSG)
         assert error_msg != None
 
+    @pytest.mark.UI
     def test_create_new_campaign(self, login, file_path):
         main_page = login
         try:
@@ -115,6 +119,7 @@ class Test(BaseCase):
 
         assert main_page.is_company_deleted(campaign_name)
 
+    @pytest.mark.UI
     def test_create_new_segment(self, create_segment):
         segment_page, segment_name = create_segment
 
@@ -130,6 +135,7 @@ class Test(BaseCase):
 
         assert segment_deleted_notification is not None
 
+    @pytest.mark.UI
     def test_delete_segment(self, create_segment):
         segment_page, segment_name = create_segment
         self._delete_segment(segment_page, segment_name)
