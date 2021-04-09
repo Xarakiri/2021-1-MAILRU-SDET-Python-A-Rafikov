@@ -129,3 +129,9 @@ class Test(BaseCase):
         segment_deleted_notification = segment_page.find(segment_page.locators.SEGMENT_DELETED_NOTIFICATION)
 
         assert segment_deleted_notification is not None
+
+    def test_delete_segment(self, create_segment):
+        segment_page, segment_name = create_segment
+        self._delete_segment(segment_page, segment_name)
+        segment_deleted_notification = segment_page.find(segment_page.locators.SEGMENT_DELETED_NOTIFICATION)
+        assert segment_deleted_notification is not None
