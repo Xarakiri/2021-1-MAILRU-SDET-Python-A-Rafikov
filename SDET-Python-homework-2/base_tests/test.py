@@ -90,49 +90,32 @@ class Test(BaseCase):
     @pytest.mark.UI
     def test_create_new_campaign(self, login, file_path):
         main_page = login
-        try:
-            main_page.click(main_page.locators.NEW_USER_CAMPAIGN)
-        except TimeoutException:
-            main_page.click(main_page.locators.CREATE_CAMPAIGN)
 
-        main_page.click(main_page.locators.TRAFFIC_CAMPAIGN)
+        main_page.click_create_traffic_campaign()
 
         url = ''.join(choices(string.ascii_lowercase, k=randint(4, 11))) + '.ru'
         self.logger.info(f'Inputting campaign url {url}.')
         with allure.step(f'Inputting campaign url {url}.'):
-            main_page.send_keys(main_page.locators.URL_INPUT, url)
+            main_page.send_campaign_url(url)
 
         campaign_name = ''.join(choices(string.ascii_lowercase, k=randint(4, 11)))
         self.logger.info(f'Inputting campaign name {campaign_name}.')
         with allure.step(f'Inputting campaign name {campaign_name}.'):
-            main_page.click(main_page.locators.CAMPAIGN_NAME_INPUT)
-        main_page.send_keys(main_page.locators.CAMPAIGN_NAME_INPUT, campaign_name)
-
-        main_page.click(main_page.locators.BANNER_BUTTON)
+            main_page.send_campaign_name(campaign_name)
 
         self.logger.info(f'Downloading photo.')
         with allure.step(f'Downloading photo.'):
-            input_field = main_page.find(main_page.locators.INPUT_IMAGE, timeout=20)
-            main_page.scroll_to(input_field)
-            input_field.send_keys(file_path)
-            main_page.click(main_page.locators.SAVE_IMAGE, timeout=20)
+            main_page.upload_photo(file_path)
 
-        main_page.click(main_page.locators.CREATE_CAMPAIGN)
+        main_page.click_create_campaign_button()
 
-        campaign = main_page.find((main_page.locators.CHECK_CAMPAIGN[0],
-                                   main_page.locators.CREATE_CAMPAIGN[1].format(campaign_name)))
+        campaign = main_page.find_campaign(campaign_name)
 
         assert campaign is not None
 
         self.logger.info(f'Deleting campaign {campaign_name}')
         with allure.step(f'Deleting campaign {campaign_name}'):
-            main_page.click(
-                (main_page.locators.CAMPAIGN_SETTINGS[0],
-                 main_page.locators.CAMPAIGN_SETTINGS[1].format(campaign_name)),
-                timeout=30
-            )
-            main_page.click(main_page.locators.ACTION_LIST)
-            main_page.click(main_page.locators.DELETE_BUTTON)
+            main_page.delete_campaign(campaign_name)
 
         assert main_page.is_campaign_deleted(campaign_name)
 
