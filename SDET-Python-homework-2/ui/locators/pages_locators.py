@@ -30,7 +30,7 @@ class MainPageLocators(ListLocators):
 
 
 class SegmentsPageLocators(ListLocators):
-    CREATE_NEW = (By.XPATH, '//a[contains(text(), "Создайте")]')
+    CREATE_NEW = (By.XPATH, '//div[contains(text(), "Добавить сегмент")]')
     ALREADY_CREATED = (By.XPATH, '//div[contains(text(), "Создать сегмент")]')
     GAMES_SEGMENT = (By.XPATH, '//div[contains(text(), "Приложения и игры в соцсетях")]')
     GAMES_SEGMENT_CBX = (By.XPATH, '//input[@type="checkbox"]')

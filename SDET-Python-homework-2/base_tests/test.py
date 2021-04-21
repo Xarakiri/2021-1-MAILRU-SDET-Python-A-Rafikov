@@ -2,13 +2,11 @@ import os
 import string
 from random import choices, randint
 
+import allure
 import pytest
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.keys import Keys
 
 from base_tests.base import BaseCase
 from ui.pages.main_page import MainPage
-import allure
 
 
 class Test(BaseCase):
@@ -21,36 +19,15 @@ class Test(BaseCase):
         main_page = login
         segment_page = main_page.go_to_segment_page()
 
-        try:
-            segment_page.click(segment_page.locators.CREATE_NEW, timeout=15)
-        except TimeoutException:
-            segment_page.click(segment_page.locators.ALREADY_CREATED, timeout=15)
-
-        segment_page.click(segment_page.locators.GAMES_SEGMENT)
-        segment_page.click(segment_page.locators.GAMES_SEGMENT_CBX)
-        segment_page.click(segment_page.locators.ADD_SEGMENT_BTN)
+        segment_page.click_create_segment()
 
         segment_name = ''.join(choices(string.ascii_letters, k=randint(4, 11)))
 
         self.logger.info(f'Creating segment "{segment_name}".')
         with allure.step(f'Creating segment "{segment_name}".'):
-            segment_page.click(segment_page.locators.SEGMENT_NAME_INPUT)
-            segment_page.send_keys(
-                segment_page.locators.SEGMENT_NAME_INPUT,
-                segment_name
-            )
-        segment_page.click(segment_page.locators.CREATE_SEGMENT_BTN)
+            segment_page.send_segment_name(segment_name)
+        segment_page.click_create()
         return segment_page, segment_name
-
-    def _delete_segment(self, segment_page, segment_name):
-        self.logger.info(f'Deleting segment {segment_name}.')
-        with allure.step(f'Deleting segment {segment_name}.'):
-            segment_page.click(
-                (segment_page.locators.CHECK_SEGMENT[0],
-                 segment_page.locators.CHECK_SEGMENT[1].format(segment_name))
-            )
-            segment_page.click(segment_page.locators.ACTION_LIST)
-            segment_page.click(segment_page.locators.DELETE_BUTTON)
 
     @pytest.fixture
     def login(self):
@@ -128,16 +105,14 @@ class Test(BaseCase):
     def test_create_new_segment(self, create_segment):
         segment_page, segment_name = create_segment
 
-        segment_in_list = segment_page.find(
-            (segment_page.locators.SEGMENT_IN_LIST[0],
-             segment_page.locators.SEGMENT_IN_LIST[1].format(segment_name))
-        )
+        segment_in_list = segment_page.find_segment(segment_name)
         assert segment_in_list is not None
 
-        self._delete_segment(segment_page, segment_name)
+        self.logger.info(f'Deleting segment {segment_name}.')
+        with allure.step(f'Deleting segment {segment_name}.'):
+            segment_page.delete_segment(segment_name)
 
-        segment_deleted_notification = segment_page.find(segment_page.locators.SEGMENT_DELETED_NOTIFICATION)
-
+        segment_deleted_notification = segment_page.find_segment_deleted_notification()
         assert segment_deleted_notification is not None
 
     @allure.epic('All tests')
@@ -147,6 +122,10 @@ class Test(BaseCase):
     @pytest.mark.UI
     def test_delete_segment(self, create_segment):
         segment_page, segment_name = create_segment
-        self._delete_segment(segment_page, segment_name)
-        segment_deleted_notification = segment_page.find(segment_page.locators.SEGMENT_DELETED_NOTIFICATION)
+
+        self.logger.info(f'Deleting segment {segment_name}.')
+        with allure.step(f'Deleting segment {segment_name}.'):
+            segment_page.delete_segment(segment_name)
+
+        segment_deleted_notification = segment_page.find_segment_deleted_notification()
         assert segment_deleted_notification is not None
