@@ -42,16 +42,6 @@ class Test(BaseCase):
         segment_page.click(segment_page.locators.CREATE_SEGMENT_BTN)
         return segment_page, segment_name
 
-    def _login(self,
-               username='rafikov.ds7777@mail.ru',
-               password='RYnT84r-nVpwCx7'):
-        self.logger.info(f'Logging as username={username}, password={password}')
-        with allure.step(f'Logging as username={username}, password={password}'):
-            self.base_page.click(self.base_page.locators.LOGIN_BUTTON)
-            self.base_page.send_keys(self.base_page.locators.LOGIN_INPUT, username)
-            self.base_page.send_keys(self.base_page.locators.PASSWORD_INPUT,
-                                     password, Keys.ENTER)
-
     def _delete_segment(self, segment_page, segment_name):
         self.logger.info(f'Deleting segment {segment_name}.')
         with allure.step(f'Deleting segment {segment_name}.'):
@@ -64,7 +54,7 @@ class Test(BaseCase):
 
     @pytest.fixture
     def login(self):
-        self._login()
+        self.base_page.login()
         yield MainPage(driver=self.driver)
 
     @allure.epic('All tests')
@@ -73,12 +63,12 @@ class Test(BaseCase):
     @allure.description('Negative test with invalid username.')
     @pytest.mark.UI
     def test_negative_login1(self):
-        self._login(
+        self.base_page.login(
             username=''.join(choices(string.ascii_letters, k=randint(2, 10))) + '@' +
                      ''.join(choices(string.ascii_letters, k=randint(2, 10))) + '.ru'
         )
         error_msg = self.base_page.find(self.base_page.locators.ERROR_MSG)
-        assert error_msg != None
+        assert error_msg is not None
 
     @allure.epic('All tests')
     @allure.feature('UI tests')
@@ -86,11 +76,11 @@ class Test(BaseCase):
     @allure.description('Negative test with invalid password.')
     @pytest.mark.UI
     def test_negative_login2(self):
-        self._login(
+        self.base_page.login(
             password=''.join(choices(string.ascii_letters, k=randint(2, 10)))
         )
         error_msg = self.base_page.find(self.base_page.locators.ERROR_MSG)
-        assert error_msg != None
+        assert error_msg is not None
 
     @allure.epic('All tests')
     @allure.feature('UI tests')

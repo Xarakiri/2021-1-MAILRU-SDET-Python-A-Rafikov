@@ -1,6 +1,7 @@
 import logging
 import allure
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -49,3 +50,11 @@ class BasePage:
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
                     raise
+
+    def login(self,
+              username='rafikov.ds7777@mail.ru',
+              password='RYnT84r-nVpwCx7'):
+        self.click(self.locators.LOGIN_BUTTON)
+        self.send_keys(self.locators.LOGIN_INPUT, username)
+        self.send_keys(self.locators.PASSWORD_INPUT,
+                       password, Keys.ENTER)
