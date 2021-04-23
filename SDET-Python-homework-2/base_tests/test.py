@@ -68,33 +68,37 @@ class Test(BaseCase):
     def test_create_new_campaign(self, login, file_path):
         main_page = login
 
-        main_page.click_create_traffic_campaign()
-
         url = ''.join(choices(string.ascii_lowercase, k=randint(4, 11))) + '.ru'
-        self.logger.info(f'Inputting campaign url {url}.')
-        with allure.step(f'Inputting campaign url {url}.'):
-            main_page.send_campaign_url(url)
-
         campaign_name = ''.join(choices(string.ascii_lowercase, k=randint(4, 11)))
-        self.logger.info(f'Inputting campaign name {campaign_name}.')
-        with allure.step(f'Inputting campaign name {campaign_name}.'):
-            main_page.send_campaign_name(campaign_name)
 
-        self.logger.info(f'Downloading photo.')
-        with allure.step(f'Downloading photo.'):
-            main_page.upload_photo(file_path)
+        self.logger.info(f'Creating campaign {campaign_name}')
+        with allure.step(f'Creating campaign {campaign_name}'):
+            self.create_new_campaign(main_page, url, campaign_name, file_path)
 
-        main_page.click_create_campaign_button()
-
-        campaign = main_page.find_campaign(campaign_name)
-
-        assert campaign is not None
+        assert main_page.is_campaign_created(campaign_name)
 
         self.logger.info(f'Deleting campaign {campaign_name}')
         with allure.step(f'Deleting campaign {campaign_name}'):
             main_page.delete_campaign(campaign_name)
 
         assert main_page.is_campaign_deleted(campaign_name)
+
+    def create_new_campaign(self, main_page, url, name, file_path):
+        main_page.click_create_traffic_campaign()
+
+        self.logger.info(f'Inputting campaign url {url}.')
+        with allure.step(f'Inputting campaign url {url}.'):
+            main_page.send_campaign_url(url)
+
+        self.logger.info(f'Inputting campaign name {name}.')
+        with allure.step(f'Inputting campaign name {name}.'):
+            main_page.send_campaign_name(name)
+
+        self.logger.info(f'Downloading photo.')
+        with allure.step(f'Downloading photo.'):
+            main_page.upload_photo(file_path)
+
+        main_page.click_create_campaign_button()
 
     @allure.epic('All tests')
     @allure.feature('UI tests')

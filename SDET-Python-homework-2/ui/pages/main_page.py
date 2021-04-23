@@ -70,3 +70,7 @@ class MainPage(BasePage):
         )
         self.click(self.locators.ACTION_LIST)
         self.click(self.locators.DELETE_BUTTON)
+
+    def is_campaign_created(self, campaign_name):
+        campaign = self.find_campaign(campaign_name)
+        return campaign is not None
