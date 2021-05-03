@@ -49,6 +49,15 @@ def top5_by_bytes(filename=PATH_TO_ACCESS_LOG):
     return list(sorted(answer, key=lambda x: int(x[2]), reverse=True))[:5]
 
 
+def top5_by_5xx(filename=PATH_TO_ACCESS_LOG):
+    pattern = re.compile(r'([(\d\.)]+) - - \[.*?] ".*?" 5\d\d \d+')
+    with open(filename) as f:
+        for line in f:
+            g = re.match(pattern, line)
+            if g:
+                yield g.groups()
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
 
@@ -57,6 +66,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument('-mc', '--most_common', action='store_true', help='Топ 10 самых частых запросов')
     parser.add_argument('-mw', '--most_weight', action='store_true', help='Топ 5 самых больших по размеру запросов,'
                                                                           'которые завершились клиентской ошибкой')
+    parser.add_argument('-se', '--server_error', action='store_true',
+                        help='Топ 5 ip, которые завершились серверной 5ХХ ошибкой')
 
     args = vars(parser.parse_args(argv))
 
@@ -68,6 +79,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print(f'{Counter(top10()).most_common(10)}')
     if args['most_weight']:
         print(f'Топ 5 самых больших запросов - {top5_by_bytes()}')
+    if args['server_error']:
+        print(f'{Counter(top5_by_5xx()).most_common(5)}')
 
     print(args)
     return 0
