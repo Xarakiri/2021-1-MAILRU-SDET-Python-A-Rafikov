@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import re
 from collections import Counter
@@ -77,32 +78,54 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                                                                           'которые завершились клиентской ошибкой')
     parser.add_argument('-se', '--server_error', action='store_true',
                         help='Топ 5 ip, которые завершились серверной 5ХХ ошибкой')
+    parser.add_argument('--json', action='store_true', help='Сохранить собранные данные в JSON')
     args = vars(parser.parse_args(argv))
 
     filename = args['filename']
     if os.path.exists(filename):
         os.remove(filename)
 
+    answer_json = {}
+
     if args['count']:
         text = 'Общее количество запросов'
         data = str(count_lines())
-        save(filename, text, [data])
+        if args['json']:
+            answer_json[text] = data
+        else:
+            save(filename, text, [data])
     if args['count_type']:
         text = 'Общее количество запросов по типу'
         data = Counter(count_by_methods())
-        save(filename, text, [' '.join([i, str(v)]) + '\n' for i, v in data.items()])
+        if args['json']:
+            answer_json[text] = [{'method': i, 'count': v} for i, v in data.items()]
+        else:
+            save(filename, text, [' '.join([i, str(v)]) + '\n' for i, v in data.items()])
     if args['most_common']:
         text = '10 самых частых запросов'
         data = Counter(top10()).most_common(10)
-        save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
+        if args['json']:
+            answer_json[text] = [{'url': i[0], 'count': i[1]} for i in data]
+        else:
+            save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
     if args['most_weight']:
         text = 'Топ 5 самых больших запросов, которые завершились 4ХХ ошибкой'
         data = top5_by_bytes()
-        save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
+        if args['json']:
+            answer_json[text] = [{'url': i[0], 'status_code': i[1], 'weight': i[2], 'ip': i[3]} for i in data]
+        else:
+            save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
     if args['server_error']:
         text = 'Топ 5 пользователей по количеству запросов, которые завершились 5ХХ ошибкой'
         data = Counter(top5_by_5xx()).most_common(5)
-        save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
+        if args['json']:
+            answer_json[text] = [{'ip': i[0], 'count': i[1]} for i in data]
+        else:
+            save(filename, text, [' '.join(map(str, i)) + '\n' for i in data])
+
+    if args['json']:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(answer_json, f, ensure_ascii=False, indent=4)
 
     return 0
 
