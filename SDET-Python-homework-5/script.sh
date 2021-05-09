@@ -1,5 +1,7 @@
 #!/usr/bin/bash
-rm answer.txt &
+if [[ -f answer.txt ]]; then
+rm answer.txt
+fi
 echo 'Общее количество запросов' >> answer.txt
 awk 'END { print NR }' access.log >> answer.txt
 
@@ -7,17 +9,7 @@ echo >> answer.txt
 
 echo 'Общее количество запросов по типу' >> answer.txt
 
-echo -n 'POST ' >> answer.txt
-awk '{print $6}' access.log | grep POST | wc -l >> answer.txt
-
-echo -n 'GET ' >> answer.txt
-awk '/"GET/{print $6}' access.log | wc -l >> answer.txt
-
-echo -n 'HEAD ' >> answer.txt
-awk '/"HEAD/{print $6}' access.log | wc -l >> answer.txt
-
-echo -n 'PUT ' >> answer.txt
-awk '/"PUT/{print $6}' access.log | wc -l >> answer.txt
+awk 'BEGIN{FS=" ";sp=0;sg=0;sh=0;sput=0} {($6~/POST/) ? sp+=1 : sp+=0} {($6~/"GET/) ? sg+=1 : sg+=0} {($6~/"HEAD/) ? sh+=1 : sh += 0} {($6~/"PUT/) ? sput+=1 : sput+=0}END{print "POST", sp; print "GET", sg; print "HEAD", sh; print "PUT", sput}' access.log >> answer.txt
 
 echo >> answer.txt
 
