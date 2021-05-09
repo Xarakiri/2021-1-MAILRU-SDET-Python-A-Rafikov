@@ -18,7 +18,7 @@ def count_by_methods(filename=PATH_TO_ACCESS_LOG):
     pattern = re.compile(r'(GET|POST|PUT|DELETE|UPDATE|PATCH|HEAD|CONNECT|OPTIONS|TRACE)')
     with open(filename) as f:
         for line in f:
-            s = re.search(pattern, line)
+            s = re.search(pattern, line.split(" ")[5])
             if s:
                 yield s.group()
 
