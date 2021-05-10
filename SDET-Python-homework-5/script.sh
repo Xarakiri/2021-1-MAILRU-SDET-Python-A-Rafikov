@@ -9,7 +9,7 @@ echo >> answer.txt
 
 echo 'Общее количество запросов по типу' >> answer.txt
 
-awk 'BEGIN{FS=" ";sp=0;sg=0;sh=0;sput=0} {($6~/POST/) ? sp+=1 : sp+=0} {($6~/"GET/) ? sg+=1 : sg+=0} {($6~/"HEAD/) ? sh+=1 : sh += 0} {($6~/"PUT/) ? sput+=1 : sput+=0}END{print "POST", sp; print "GET", sg; print "HEAD", sh; print "PUT", sput}' access.log >> answer.txt
+awk '{split($6,a, "\""); print a[2]}' access.log | sort | uniq -c >> answer.txt
 
 echo >> answer.txt
 
