@@ -15,7 +15,7 @@ class RequestsPerType(Base):
     __tablename__ = 'requests_per_type'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    type = Column(String(20))
+    type = Column(String(3000))
     requests = Column(Integer)
 
 
