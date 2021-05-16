@@ -6,7 +6,7 @@ from sqlalchemy_utils.functions.database import database_exists
 
 from mysql.models import Base
 
-SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:password@localhost:3306/TEST_SQL"
+SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:pass@localhost:3306/TEST_SQL"
 
 
 @pytest.fixture(scope='session')
