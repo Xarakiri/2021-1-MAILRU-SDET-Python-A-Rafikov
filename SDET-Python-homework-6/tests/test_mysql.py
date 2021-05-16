@@ -13,12 +13,12 @@ from mysql.models import Users5xx
 class Test:
     def test_count(self, client: Session):
         count = script.count_lines()
-        r = TotalNumberOfRequests(total_count=count)
-        client.add(r)
+        res = TotalNumberOfRequests(total_count=count)
+        client.add(res)
         client.commit()
 
-        r = client.query(TotalNumberOfRequests).first()
-        assert r.total_count == count
+        res = client.query(TotalNumberOfRequests).first()
+        assert res.total_count == count
 
     def test_count_by_methods(self, client: Session):
         data = Counter(script.count_by_methods())

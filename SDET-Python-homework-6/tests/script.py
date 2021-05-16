@@ -10,13 +10,13 @@ PATH_TO_ACCESS_LOG = 'access.log'
 
 
 def count_lines(filename=PATH_TO_ACCESS_LOG):
-    with open(filename) as f:
-        return sum(1 for line in f if line.strip())
+    with open(filename) as file:
+        return sum(1 for line in file if line.strip())
 
 
 def count_by_methods(filename=PATH_TO_ACCESS_LOG):
-    with open(filename) as f:
-        for line in f:
+    with open(filename) as file:
+        for line in file:
             yield line.split(" ")[5].lstrip('"')
 
 
@@ -25,43 +25,43 @@ def top10(filename=PATH_TO_ACCESS_LOG):
         r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)"
         r"(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+"
         r"(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
-    with open(filename) as f:
-        for line in f:
-            s = re.search(pattern, line)
-            if s:
-                yield s.group()
+    with open(filename) as file:
+        for line in file:
+            search_result = re.search(pattern, line)
+            if search_result:
+                yield search_result.group()
 
 
 def top5_by_bytes(filename=PATH_TO_ACCESS_LOG):
     pattern = re.compile(r'([(\d\.)]+) - - \[(.*?)] "(.*?)" (4\d\d) (\d+)')
     answer = []
-    with open(filename) as f:
-        for line in f:
-            g = re.match(pattern, line)
-            if g:
-                g = g.groups()
-                url = g[2].split(' ')[1]
-                status = g[3]
-                weight = g[-1]
-                ip = g[0]
+    with open(filename) as file:
+        for line in file:
+            match = re.match(pattern, line)
+            if match:
+                match = match.groups()
+                url = match[2].split(' ')[1]
+                status = match[3]
+                weight = match[-1]
+                ip = match[0]
                 answer.append((url, status, weight, ip))
     return list(sorted(answer, key=lambda x: int(x[2]), reverse=True))[:5]
 
 
 def top5_by_5xx(filename=PATH_TO_ACCESS_LOG):
     pattern = re.compile(r'([(\d\.)]+) - - \[.*?] ".*?" 5\d\d \d+')
-    with open(filename) as f:
-        for line in f:
-            g = re.match(pattern, line)
-            if g:
-                yield g.groups()[0]
+    with open(filename) as file:
+        for line in file:
+            match = re.match(pattern, line)
+            if match:
+                yield match.groups()[0]
 
 
 def save(filename, text, data):
-    with open(filename, 'a') as f:
-        f.write(text + '\n')
-        f.writelines(data)
-        f.write('\n\n')
+    with open(filename, 'a') as file:
+        file.write(text + '\n')
+        file.writelines(data)
+        file.write('\n\n')
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
