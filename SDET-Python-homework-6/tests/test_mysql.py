@@ -27,7 +27,7 @@ class Test:
             client.add(r)
         client.commit()
 
-        assert len(client.query(RequestsPerType).all()) == 5
+        assert client.query(RequestsPerType).count() == 5
 
     def test_top10(self, client: Session):
         data = Counter(script.top10()).most_common(10)
@@ -36,7 +36,7 @@ class Test:
             client.add(r)
         client.commit()
 
-        assert len(client.query(MostFrequentRequests).all()) == 10
+        assert client.query(MostFrequentRequests).count() == 10
 
     def test_top5_by_bytes(self, client: Session):
         data = script.top5_by_bytes()
@@ -50,7 +50,7 @@ class Test:
             client.add(r)
         client.commit()
 
-        assert len(client.query(LargestRequests).all()) == 5
+        assert client.query(LargestRequests).count() == 5
 
     def test_top5_by_5xx(self, client: Session):
         data = Counter(script.top5_by_5xx()).most_common(5)
@@ -59,4 +59,4 @@ class Test:
             client.add(r)
         client.commit()
 
-        assert len(client.query(Users5xx).all()) == 5
+        assert client.query(Users5xx).count() == 5
