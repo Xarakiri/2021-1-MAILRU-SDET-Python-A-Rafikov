@@ -18,7 +18,6 @@ def mysql():
     engine = create_engine(SQLALCHEMY_DATABASE_URI)
     Base.metadata.create_all(bind=engine)
     yield engine
-    drop_database(SQLALCHEMY_DATABASE_URI)
 
 
 @pytest.fixture(scope='session')
