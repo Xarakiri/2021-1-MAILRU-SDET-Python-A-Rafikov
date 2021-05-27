@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+from urllib.parse import unquote
 from collections import Counter
 from typing import Optional
 from typing import Sequence
@@ -40,7 +41,7 @@ def top5_by_bytes(filename=PATH_TO_ACCESS_LOG):
             match = re.match(pattern, line)
             if match:
                 match = match.groups()
-                url = match[2].split(' ')[1]
+                url = unquote(match[2].split(' ')[1])
                 status = match[3]
                 weight = match[-1]
                 ip = match[0]
