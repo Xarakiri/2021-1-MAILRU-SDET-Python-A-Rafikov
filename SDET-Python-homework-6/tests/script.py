@@ -18,7 +18,9 @@ def count_lines(filename=PATH_TO_ACCESS_LOG):
 def count_by_methods(filename=PATH_TO_ACCESS_LOG):
     with open(filename) as file:
         for line in file:
-            yield line.split(" ")[5].lstrip('"')
+            method = line.split(" ")[5].lstrip('"')
+            if len(method) < 10:
+                yield method
 
 
 def top10(filename=PATH_TO_ACCESS_LOG):

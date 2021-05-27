@@ -27,7 +27,7 @@ class Test:
             client.add(r)
         client.commit()
 
-        assert client.query(RequestsPerType).count() == 5
+        assert client.query(RequestsPerType).count() == 4
 
     def test_top10(self, client: Session):
         data = Counter(script.top10()).most_common(10)
